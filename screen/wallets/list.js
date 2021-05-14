@@ -31,11 +31,25 @@ import { BlueStorageContext } from '../../blue_modules/storage-context';
 import { isCatalyst, isMacCatalina, isTablet } from '../../blue_modules/environment';
 import BlueClipboard from '../../blue_modules/clipboard';
 import navigationStyle from '../../components/navigationStyle';
+import BigNumber from 'bignumber.js';
+import ro from 'dayjs/locale/ro';
 
 const scanqrHelper = require('../../helpers/scan-qr');
 const A = require('../../blue_modules/analytics');
 const fs = require('../../blue_modules/fs');
 const WalletsListSections = { CAROUSEL: 'CAROUSEL', LOCALTRADER: 'LOCALTRADER', TRANSACTIONS: 'TRANSACTIONS' };
+
+export const removeTrailingZeros = value => {
+  value = value.toString();
+
+  if (value.indexOf('.') === -1) {
+    return value;
+  }
+  while ((value.slice(-1) === '0' || value.slice(-1) === '.') && value.indexOf('.') !== -1) {
+    value = value.substr(0, value.length - 1);
+  }
+  return value;
+};
 
 const WalletsList = () => {
   const walletsCarousel = useRef();
@@ -234,7 +248,14 @@ const WalletsList = () => {
     }
   };
 
+  
+
   const renderTransactionListsRow = data => {
+    const newItem = {
+      ...data.item,
+      value: new BigNumber(data?.item?.value).dividedBy(100000000).toFixed(10),
+      // value: removeTrailingZeros(val)
+    };
     return (
       <View style={styles.transaction}>
         <BlueTransactionListItem item={data.item} itemPriceUnit={data.item.walletPreferredBalanceUnit} />
@@ -242,27 +263,27 @@ const WalletsList = () => {
     );
   };
 
-  const renderLocalTrader = () => {
-    if (carouselData.every(wallet => wallet === false)) return null;
-    if (carouselData.length > 0 && !carouselData.some(wallet => wallet.type === PlaceholderWallet.type)) {
-      const button = (
-        <TouchableOpacity
-          onPress={() => {
-            navigate('HodlHodl', { screen: 'HodlHodl' });
-          }}
-          style={[styles.ltRoot, stylesHook.ltRoot]}
-        >
-          <View style={styles.ltTextWrap}>
-            <Text style={[styles.ltTextBig, stylesHook.ltTextBig]}>{loc.hodl.local_trader}</Text>
-            <Text style={[styles.ltTextSmall, stylesHook.ltTextSmall]}>{loc.hodl.p2p}</Text>
-          </View>
-        </TouchableOpacity>
-      );
-      return isLargeScreen ? <SafeAreaView>{button}</SafeAreaView> : button;
-    } else {
-      return null;
-    }
-  };
+  // const renderLocalTrader = () => {
+  //   if (carouselData.every(wallet => wallet === false)) return null;
+  //   if (carouselData.length > 0 && !carouselData.some(wallet => wallet.type === PlaceholderWallet.type)) {
+  //     const button = (
+  //       <TouchableOpacity
+  //         onPress={() => {
+  //           navigate('HodlHodl', { screen: 'HodlHodl' });
+  //         }}
+  //         style={[styles.ltRoot, stylesHook.ltRoot]}
+  //       >
+  //         <View style={styles.ltTextWrap}>
+  //           <Text style={[styles.ltTextBig, stylesHook.ltTextBig]}>{loc.hodl.local_trader}</Text>
+  //           <Text style={[styles.ltTextSmall, stylesHook.ltTextSmall]}>{loc.hodl.p2p}</Text>
+  //         </View>
+  //       </TouchableOpacity>
+  //     );
+  //     return isLargeScreen ? <SafeAreaView>{button}</SafeAreaView> : button;
+  //   } else {
+  //     return null;
+  //   }
+  // };
 
   const renderWalletsCarousel = () => {
     return (
@@ -284,8 +305,8 @@ const WalletsList = () => {
     switch (item.section.key) {
       case WalletsListSections.CAROUSEL:
         return isLargeScreen ? null : renderWalletsCarousel();
-      case WalletsListSections.LOCALTRADER:
-        return renderLocalTrader();
+      // case WalletsListSections.LOCALTRADER:
+      //   return renderLocalTrader();
       case WalletsListSections.TRANSACTIONS:
         return renderTransactionListsRow(item);
       default:
@@ -358,7 +379,9 @@ const WalletsList = () => {
 
   const onBarScanned = value => {
     if (!value) return;
-    DeeplinkSchemaMatch.navigationRouteFor({ url: value }, completionValue => {
+    let realValue = value.replace("xep:", "bitcoin:");
+    console.log("=====realValue::", realValue, value);
+    DeeplinkSchemaMatch.navigationRouteFor({ url: realValue }, completionValue => {
       ReactNativeHapticFeedback.trigger('impactLight', { ignoreAndroidSystemSettings: false });
       navigate(...completionValue);
     });

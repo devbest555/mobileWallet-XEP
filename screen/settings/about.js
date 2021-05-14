@@ -21,10 +21,10 @@ const About = () => {
     center: {
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 54,
+      marginTop: 0,
     },
     logo: {
-      width: 102,
+      width: 124,
       height: 124,
     },
     textFree: {
@@ -37,7 +37,7 @@ const About = () => {
     },
     textBackup: {
       maxWidth: 260,
-      marginBottom: 40,
+      marginBottom: 0,
       color: colors.foregroundColor,
       fontSize: 15,
       textAlign: 'center',
@@ -45,7 +45,7 @@ const About = () => {
     },
     buildWith: {
       backgroundColor: colors.inputBackgroundColor,
-      padding: 16,
+      padding: 6,
       paddingTop: 0,
       borderRadius: 8,
     },
@@ -72,31 +72,31 @@ const About = () => {
   };
 
   const handleOnLicensingPress = () => {
-    navigate('Licensing');
+    // navigate('Licensing');
   };
 
   const handleOnTwitterPress = () => {
-    Linking.openURL('https://twitter.com/bluewalletio');
+    Linking.openURL('https://twitter.com/ElectraProtocol');
   };
 
   const handleOnDiscordPress = () => {
-    Linking.openURL('https://discord.gg/btWq2Aby2z');
+    Linking.openURL('https://discord.com/invite/B8F7Jdv');
   };
 
   const handleOnTelegramPress = () => {
-    Linking.openURL('https://t.me/bluewallethat');
+    Linking.openURL('https://t.me/ElectraProtocol');
   };
   const handleOnGithubPress = () => {
-    Linking.openURL('https://github.com/BlueWallet/BlueWallet');
+    Linking.openURL('https://github.com/ElectraProtocol');
   };
   const handleOnRatePress = () => {
     const options = {
       AppleAppID: '1376878040',
-      GooglePackageName: 'io.bluewallet.bluewallet',
+      GooglePackageName: 'io.electraprotocol.xepwallet',
       preferredAndroidMarket: AndroidMarket.Google,
       preferInApp: true,
       openAppStoreIfInAppFails: true,
-      fallbackPlatformURL: 'https://bluewallet.io',
+      fallbackPlatformURL: 'https://www.electraprotocol.com/',
     };
     Rate.rate(options, success => {
       if (success) {
@@ -109,10 +109,10 @@ const About = () => {
     <ScrollView testID="AboutScrollView" contentInsetAdjustmentBehavior="automatic">
       <BlueCard>
         <View style={styles.center}>
-          <Image style={styles.logo} source={require('../../img/bluebeast.png')} />
+          <Image style={styles.logo} source={require('../../img/icon.png')} />
           <Text style={styles.textFree}>{loc.settings.about_free}</Text>
           <Text style={styles.textBackup}>{loc.settings.about_backup}</Text>
-          <BlueButton onPress={handleOnRatePress} title={loc.settings.about_review + ' ⭐🙏'} />
+          {/* <BlueButton onPress={handleOnRatePress} title={loc.settings.about_review + ' ⭐🙏'} /> */}
         </View>
       </BlueCard>
       <BlueListItem
@@ -180,7 +180,7 @@ const About = () => {
         onPress={handleOnLicensingPress}
         title={loc.settings.about_license}
       />
-      <BlueListItem
+      {/* <BlueListItem
         leftIcon={{
           name: 'flask',
           type: 'font-awesome',
@@ -191,7 +191,7 @@ const About = () => {
         testID="RunSelfTestButton"
         title={loc.settings.about_selftest}
       />
-      <BlueSpacing20 />
+      <BlueSpacing20 /> */}
       <BlueSpacing20 />
       <BlueTextCentered>
         {getApplicationName()} ver {getVersion()} (build {getBuildNumber()})

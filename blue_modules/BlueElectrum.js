@@ -40,12 +40,9 @@ async function _getRealm() {
 }
 
 const storageKey = 'ELECTRUM_PEERS';
-const defaultPeer = { host: 'electrumx1.electraprotocol.eu', tcp: '50001' };
+const defaultPeer = { host: 'electrumx1.electraprotocol.eu', ssl: '50002' };
 const hardcodedPeers = [
-  // { host: 'electrum3.bluewallet.io', ssl: '443' },
-  // { host: '54.38.53.207', ssl: '50002' },
-  { host: 'electrumx1.electraprotocol.eu', tcp: '50001' },
-  // { host: 'electrumx1.electraprotocol.eu', ssl: '50002' },
+  { host: 'electrumx1.electraprotocol.eu', ssl: '50002' },
 ];
 
 /** @type {ElectrumClient} */
@@ -68,7 +65,7 @@ async function connectMain() {
     usingPeer = savedPeer;
   }
 
-  await DefaultPreference.setName('group.io.bluewallet.bluewallet');
+  await DefaultPreference.setName('group.io.electraprotocol.xepwallet');
   try {
     if (usingPeer.host.endsWith('onion')) {
       const randomPeer = await getRandomHardcodedPeer();
@@ -184,7 +181,7 @@ async function presentNetworkErrorAlert(usingPeer) {
                   await AsyncStorage.setItem(AppStorage.ELECTRUM_TCP_PORT, '');
                   await AsyncStorage.setItem(AppStorage.ELECTRUM_SSL_PORT, '');
                   try {
-                    await DefaultPreference.setName('group.io.bluewallet.bluewallet');
+                    await DefaultPreference.setName('group.io.electraprotocol.xepwallet');
                     await DefaultPreference.clear(AppStorage.ELECTRUM_HOST);
                     await DefaultPreference.clear(AppStorage.ELECTRUM_SSL_PORT);
                     await DefaultPreference.clear(AppStorage.ELECTRUM_TCP_PORT);
@@ -716,11 +713,11 @@ module.exports.estimateFees = async function () {
   const _slow = await module.exports.estimateFee(144);
 
   // calculating fast fees from mempool:
-  const fast = 0.1;// module.exports.calcEstimateFeeFromFeeHistorgam(1, histogram);
+  const fast = 100000; //module.exports.calcEstimateFeeFromFeeHistorgam(1, histogram);
   // recalculating medium and slow fees using bitcoincore estimations only like relative weights:
   // (minimum 1 sat, just for any case)
-  const medium = 0.01;//Math.max(1, Math.round((fast * _medium) / _fast));
-  const slow = 0.001;//Math.max(1, Math.round((fast * _slow) / _fast));
+  const medium = 1000; //Math.max(1, Math.round((fast * _medium) / _fast));
+  const slow = 100; //Math.max(1, Math.round((fast * _slow) / _fast));
   return { fast, medium, slow };
 };
 
